@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Jogo da Cobrinha</title>
+</head>
+<body>
+    <canvas id="stage" width="600" height="600"></canvas>
+    <script type="text/javascript">
+
+        window.onload = function() {
+
+            var stage = document.getElementById('stage');
+            var ctx = stage.getContext("2d");
+            document.addEventListener("keydown", keyPush)
+            setInterval(game, 80);  // setInterval define um intervalo para uma função ser chamada varias vezes com aquele intervalo. // velocidade que a cobrinha vai andar.
+
+            const vel = 1;
+
+            var vx = vy = 0;  // Velocidade que vai começar.
+            var px = py = 10; // Ponto que a cobra vai começar.
+            var tp = 20;  // tamanho da peça.
+            var qp = 30; // Quantidade de peças.
+            var ax = ay = 15; // posição inicial da maçã
+            
+
+            var trail = [];
+            tail = 5;   // Estou dizendo com quantos quadradinhos a cobra vai começar.
+
+
+            function game() {
+                px += vx;
+                py += vy;
+
+                if (px < 0) {
+                    px = qp - 1;
+                }
+                if (px > qp -1) {
+                    px = 0;
+                }
+                if (py < 0) {
+                    py = qp -1;
+                }
+                if (py > qp -1) {
+                    py = 0;
+                }
+
+                ctx.fillStyle = "black";
+                ctx.fillRect(0,0, stage.width, stage.height); 
+
+                ctx.fillStyle = "green";  // Cor da maçã.
+                ctx.fillRect (ax * tp, ay * tp, tp, tp); // local que o vermelho da maça vai ficar.
+
+                ctx.fillStyle = "white"; // cor da cobra
+
+                for (var i = 0; i < trail.length; i++) {
+                    ctx.fillRect(trail[i].x * tp, trail[i].y * tp, tp-1, tp-1); // O tp-1 faz a cobrinha ganhar 1 espacinho entre cada quadradinho.
+                    if (trail[i].x == px && trail[i].y == py) {
+                        vx = vy = 0;
+                        tail = 5; // Quando bater, o tail volta a ser 5, que é o valor inicial
+                    }
+                }
+                
+                trail.push({x:px, y:py})
+                while (trail.length > tail) {
+                    trail.shift();
+                }
+
+                if (ax == px && ay == py) {
+                    tail++;
+                    ax = Math.floor(Math.random() * qp)
+                    ay = Math.floor(Math.random() * qp)
+                }
+
+            }
+
+            function keyPush(event) {
+                switch (event.keyCode) {
+                    case 37: // Left
+                        vx = -vel;
+                        vy = 0;
+                        break;
+                    case 38: // up
+                        vx = 0;
+                        vy = -vel;
+                        break;
+                    case 39: // right
+                        vx = vel;
+                        vy = 0;
+                        break;
+                    case 40: // down
+                        vx = 0;
+                        vy = vel;
+                        break;
+                    default:
+                        break;
+                }
+
+            }
+
+        };
+    </script>
+</body>
+</html>
